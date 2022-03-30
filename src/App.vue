@@ -8,5 +8,6 @@ let aab = 'a';
 </script>
 
 <template>
+  <div>{{ aa + aad + aab }}</div>
   <date-picker v-model="today"></date-picker>
 </template>
