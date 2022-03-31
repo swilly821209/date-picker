@@ -6,4 +6,5 @@ let today = dayjs()
 
 <template>
   <date-picker v-model="today"></date-picker>
+  <div>HI</div>
 </template>
