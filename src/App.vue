@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
+import { ref } from 'vue'
 import DatePicker from '@/components/DatePicker.vue'
-let today = dayjs()
+let value = ref<string | Date | (string | Date)[]>([new Date(), '2022-12-09'])
 </script>
 
 <template>
-  <date-picker v-model="today"></date-picker>
-  <div>HI</div>
+  <div class="flex flex-col justify-center items-center h-screen">
+    {{ value }}
+    <date-picker v-model="value"></date-picker>
+  </div>
 </template>

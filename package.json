@@ -13,6 +13,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@vueuse/core": "^8.2.3",
     "dayjs": "^1.11.0",
     "vue": "^3.2.31"
   },
@@ -40,7 +41,7 @@
     "windicss": "^3.5.1"
   },
   "lint-staged": {
-    "{src}/**/*.{js,ts,tsx,vue,md}": [
+    "src/**/*.{js,ts,tsx,vue,md}": [
       "eslint --fix"
     ]
   },
