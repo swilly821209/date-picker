@@ -25,6 +25,7 @@ module.exports = {
     'prettier/prettier': ['error', { singleQuote: true, semi: false }],
     quotes: ['error', 'single', { avoidEscape: true }],
     'no-var': 'error',
+    'no-console': ['warn', { allow: ['warn', 'error'] }],
     semi: ['error', 'never'],
   },
 }
