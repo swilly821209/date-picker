@@ -24,7 +24,7 @@ const props = withDefaults(
     allowedDates?: (date: string) => boolean
   }>(),
   {
-    headerColor: 'yellow',
+    headerColor: 'blue',
     range: false,
   }
 )
