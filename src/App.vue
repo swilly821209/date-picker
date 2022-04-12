@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import DatePicker from '@/components/DatePicker.vue'
-let value = ref<string | Date | (string | Date)[]>([new Date(), '2022-12-09'])
+let value = ref<string | Date | (string | Date)[]>([new Date(), '1993-12-09'])
 </script>
 
 <template>
