@@ -12,7 +12,8 @@ import type {
 import { Direction } from './DatePicker/index'
 import { wrapInArray, getLastValue } from '@/util/helpers'
 import { computed } from '@vue/reactivity'
-dayjs.extend(isBetween)
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+dayjs.extend(isBetween, customParseFormat)
 
 const props = withDefaults(
   defineProps<{
@@ -33,23 +34,49 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: DatePickerValue): void
 }>()
 
-const lastValue: Dayjs = dayjs(
-  Array.isArray(props.modelValue)
-    ? getLastValue(props.modelValue)
-    : (props.modelValue as SingleDatePickerValue)
+const lastValue = computed<Dayjs>(() =>
+  dayjs(
+    Array.isArray(props.modelValue)
+      ? getLastValue(props.modelValue)
+      : (props.modelValue as SingleDatePickerValue)
+  )
 )
 const wrapInArrayValue = computed<(Date | string)[]>(() =>
   wrapInArray(props.modelValue)
 )
+const nowMonth = computed<string>(() => {
+  const monthTitleArray: string[] = monthTitle.value.split(' ')
+  const fullMonthNameList = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ]
+  return `${monthTitleArray[1]}-${
+    fullMonthNameList.findIndex(
+      (monthName) => monthName === monthTitleArray[0]
+    ) + 1
+  }`
+})
 
-const firstDayOfMonth = ref<string>(lastValue.startOf('month').format('d'))
-const monthTotalDay = ref<string>(lastValue.endOf('month').format('D'))
+const firstDayOfMonth = ref<string>(
+  lastValue.value.startOf('month').format('d')
+)
+const monthTotalDay = ref<string>(lastValue.value.endOf('month').format('D'))
 
-let monthTitle = ref<string>(lastValue.format('MMMM YYYY'))
+let monthTitle = ref<string>(lastValue.value.format('MMMM YYYY'))
 let month = ref<MonthArray>(
   buildMonth(+firstDayOfMonth.value, +monthTotalDay.value)
 )
-let year = ref<string>(lastValue.format('YYYY'))
+let year = computed<string>(() => lastValue.value.format('YYYY'))
 
 function formatValue(value: DatePickerValue) {
   if (Array.isArray(value) && value.length !== 0) {
@@ -65,14 +92,14 @@ emit('update:modelValue', formatValue(props.modelValue))
 
 function changeMonth(change: string): void {
   change === Direction.next
-    ? (monthTitle.value = dayjs(monthTitle.value)
+    ? (monthTitle.value = dayjs(nowMonth.value)
         .add(1, 'Month')
         .format('MMMM YYYY'))
-    : (monthTitle.value = dayjs(monthTitle.value)
+    : (monthTitle.value = dayjs(nowMonth.value)
         .subtract(1, 'Month')
         .format('MMMM YYYY'))
-  firstDayOfMonth.value = dayjs(monthTitle.value).startOf('month').format('d')
-  monthTotalDay.value = dayjs(monthTitle.value).endOf('month').format('D')
+  firstDayOfMonth.value = dayjs(nowMonth.value).startOf('month').format('d')
+  monthTotalDay.value = dayjs(nowMonth.value).endOf('month').format('D')
   month.value = buildMonth(+firstDayOfMonth.value, +monthTotalDay.value)
 }
 
@@ -83,9 +110,9 @@ function buildMonth(firstDay: number, totalDay: number): MonthArray {
   }
   for (let i = 0; i < totalDay; i++) {
     month[firstDay + i] = {
-      day: dayjs(
-        `${dayjs(monthTitle.value).format('YYYY-MM')}-${i + 1}`
-      ).format('YYYY-MM-DD'),
+      day: dayjs(`${dayjs(nowMonth.value).format('YYYY-MM')}-${i + 1}`).format(
+        'YYYY-MM-DD'
+      ),
       selected: false,
     }
   }
@@ -169,7 +196,7 @@ function selectDate(date: string): void {
     ></date-picker-header>
     <date-picker-body
       :month="month"
-      :monthTitle="monthTitle"
+      :nowMonth="nowMonth"
       @select-date="selectDate"
       @change-month="changeMonth"
     ></date-picker-body>

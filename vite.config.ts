@@ -7,6 +7,7 @@ import WindiCSS from 'vite-plugin-windicss'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: 'date-picker',
   plugins: [vue(), WindiCSS()],
   resolve: {
     alias: {
